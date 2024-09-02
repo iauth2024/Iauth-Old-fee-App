@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Payment Success</title>
+</head>
+<body>
+    <h1>Payment Details</h1>
+    
+    {% if error_message %}
+        <p class="error-message">{{ error_message }}</p>
+    {% endif %}
+    
+    {% if student %}
+        <h2>Student Information</h2>
+        <p>Name: {{ student.name }}</p>
+        <p>Admission Number: {{ student.admission_number }}</p>
+        <!-- Add more student details as needed -->
+    {% endif %}
+    
+    {% if payment_details %}
+        <h2>Payment Details</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Receipt No</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                    <!-- Add more columns as needed -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for payment in payment_details %}
+                    <tr>
+                        <td>{{ payment.receipt_no }}</td>
+                        <td>{{ payment.amount }}</td>
+                        <td>{{ payment.date }}</td>
+                        <!-- Add more columns as needed -->
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+</body>
+</html>

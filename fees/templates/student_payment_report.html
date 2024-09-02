@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receipt List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1, h2 {
+            color: #333;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .error-message {
+            color: #d9534f;
+            background-color: #f9d6d5;
+            padding: 15px;
+            border: 1px solid #d9534f;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .form-container {
+            margin-bottom: 20px;
+        }
+        .form-container form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .form-container label {
+            flex: 1;
+            min-width: 120px;
+            margin-right: 10px;
+        }
+        .form-container input, .form-container button {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .form-container input:focus, .form-container button:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+        .form-container button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .form-container button:hover {
+            background-color: #45a049;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tbody tr:hover {
+            background-color: #ddd;
+        }
+        @media (max-width: 768px) {
+            .form-container form {
+                flex-direction: column;
+            }
+            .form-container label, .form-container input, .form-container button {
+                width: 100%;
+                box-sizing: border-box;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Iauth Receipt List</h1>
+
+        {% if error_message %}
+            <p class="error-message">{{ error_message }}</p>
+        {% endif %}
+
+        <div class="form-container">
+            <h2>Filter Receipts</h2>
+            <form method="get">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Filter</button>
+            </form>
+        </div>
+
+        <h2>Payments</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Receipt No</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                    <th>Created By</th>
+                    <th>Receipt Type</th>
+                    <th>Name</th>
+                    <th>Payment Method</th>
+                    <th>Organization</th>
+                    <th>Year</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for payment in payment_data %}
+                    <tr>
+                        <td>{{ payment.receipt_no }}</td>
+                        <td>{{ payment.amount }}</td>
+                        <td>{{ payment.date }}</td>
+                        <td>{{ payment.created_by }}</td>
+                        <td>{{ payment.receipt_type }}</td>
+                        <td>{{ payment.name }}</td>
+                        <td>{{ payment.payment_method }}</td>
+                        <td>{{ payment.organization }}</td>
+                        <td>{{ payment.year }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="9">No payments found.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
