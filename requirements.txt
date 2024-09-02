@@ -71,3 +71,4 @@ xhtml2pdf==0.2.15
 XlsxWriter==3.2.0
 xlwings==0.31.8
 yfinance==0.2.40
+gunicorn==23.0.0
