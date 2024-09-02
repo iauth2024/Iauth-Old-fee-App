@@ -127,29 +127,30 @@
 
 # DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # DATA_UPLOAD_MAX_NUMBER_FIELDS = 500000  
-####################################################################################
+####################################################################################  
+
+
+
+# production Settings
 
 from pathlib import Path
-import os
-import dj_database_url  # type: ignore
-from whitenoise import WhiteNoise  # type: ignore
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Quick-start development settings - unsuitable for production
+# See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-default-secret-key')
+SECRET_KEY = 'django-insecure-+w6x!eb2qe51w8@gr)$ru38_r$^3@%npv)g^c*ur!-qn)95ip+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+DEBUG = True
 
-ALLOWED_HOSTS = [
-    'iauth-old-fee-app.onrender.com',
-   
-]
-
+ALLOWED_HOSTS = ['https://iauth-old-fee-app.onrender.com']  # Update this with your actual domain or IP addresses
 
 # Application definition
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -157,14 +158,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Your apps
-    'accounts',
-    'oldfee',  # Assuming 'oldfee' is the name of your Django app
+    'django.contrib.humanize',
+    'fees',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -178,7 +177,7 @@ ROOT_URLCONF = 'khazana.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],  # Custom directory for templates
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -193,7 +192,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'khazana.wsgi.application'
 
-# Database configuration
+# Database
+# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -206,6 +206,8 @@ DATABASES = {
 }
 
 # Password validation
+# https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -222,22 +224,24 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Internationalization
+# https://docs.djangoproject.com/en/5.0/topics/i18n/
+
 LANGUAGE_CODE = 'en-us'
+
 TIME_ZONE = 'UTC'
+
 USE_I18N = True
+
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
-STATIC_URL = '/static/'  # URL prefix for serving static files
-STATICFILES_DIRS = [BASE_DIR / 'static']  # Directories to look for static files
-STATIC_ROOT = BASE_DIR / 'staticfiles'  # Directory where static files are collected
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'  # WhiteNoise for static files
+# https://docs.djangoproject.com/en/5.0/howto/static-files/
+
+STATIC_URL = 'static/'
 
 # Default primary key field type
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
-# Authentication settings
-LOGIN_URL = 'login'
-LOGOUT_URL = 'logout'
-LOGIN_REDIRECT_URL = 'homepage'  # Redirect after successful login
-LOGOUT_REDIRECT_URL = 'homepage'  # Redirect after successful logout
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 500000  
+
