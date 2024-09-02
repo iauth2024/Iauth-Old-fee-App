@@ -147,7 +147,7 @@ SECRET_KEY = 'django-insecure-+w6x!eb2qe51w8@gr)$ru38_r$^3@%npv)g^c*ur!-qn)95ip+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['https://iauth-old-fee-app.onrender.com']  # Update this with your actual domain or IP addresses
+ALLOWED_HOSTS = ['iauth-old-fee-app.onrender.com']  # Update this with your actual domain or IP addresses
 
 # Application definition
 
