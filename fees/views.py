@@ -399,16 +399,6 @@ from .models import Payment, Student
 from django.core.exceptions import ValidationError
 
 
-
-import pandas as pd
-from django.core.exceptions import ValidationError
-from django.http import HttpResponse
-from django.shortcuts import render
-
-import logging
-
-# Set up logging
-logger = logging.getLogger(__name__)
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def upload_payments(request):
@@ -416,38 +406,39 @@ def upload_payments(request):
         form = PaymentUploadForm(request.POST, request.FILES)
         if form.is_valid():
             excel_file = request.FILES['excel_file']
-            df = pd.read_excel(excel_file)
-
-            # Dictionary to hold the totals for each student and receipt_type
-            fee_totals = {}
-
+            df = pd.read_excel(excel_file)  # Assuming the data is in the first sheet
+            
+            # Process each row of the DataFrame
             for index, row in df.iterrows():
                 receipt_no = str(row.get('Receipt No', '')).strip()
-                student_admission_no = str(row.get('Student Admission No', '')).strip()
+                student_admission_no = str(row.get('Student Admission No', '')).strip()  # Adjust column name
                 amount_str = str(row.get('Amount', '')).strip()
                 date_value = row.get('Date', None)
                 created_by_username = str(row.get('Created By', '')).strip()
                 receipt_type = str(row.get('receipt_type', '')).strip()
                 name = str(row.get('Name', '')).strip()
-                payment_method = str(row.get('Payment Method', '')).strip()
-                organization = str(row.get('Organization', '')).strip()
-                year = str(row.get('Year', '')).strip()
+                payment_method = str(row.get('Payment Method', '')).strip()  # New field for Payment Method
+                organization = str(row.get('Organization', '')).strip()  # New field for Organization
+                year = str(row.get('Year', '')).strip()  # New field for Year
 
+                # Convert amount to float and handle potential conversion errors
                 try:
-                    amount = float(amount_str.replace(',', ''))
+                    amount = float(amount_str.replace(',', ''))  # Remove commas and convert to float
                 except ValueError:
                     print(f"Invalid amount '{amount_str}' in row {index + 1}")
                     continue
 
+                # Convert date to datetime.date object and handle potential conversion errors
                 if pd.notna(date_value):
                     try:
-                        date = pd.to_datetime(date_value).date()
+                        date = pd.to_datetime(date_value).date()  # Convert to datetime.date
                     except ValueError:
                         print(f"Invalid date '{date_value}' in row {index + 1}")
                         continue
                 else:
                     date = None
 
+                # Check if student exists
                 if student_admission_no:
                     try:
                         student = Student.objects.get(admission_number=student_admission_no)
@@ -457,6 +448,7 @@ def upload_payments(request):
                 else:
                     student = None
 
+                # Check if user exists
                 if created_by_username:
                     try:
                         created_by = User.objects.get(username=created_by_username)
@@ -466,6 +458,7 @@ def upload_payments(request):
                 else:
                     created_by = None
 
+                # Create and save Payment instance
                 try:
                     payment = Payment(
                         receipt_no=receipt_no,
@@ -476,31 +469,15 @@ def upload_payments(request):
                         receipt_type=receipt_type,
                         name=name,
                         payment_method=payment_method,
-                        organization=organization,
-                        year=year
+                        organization=organization,  # Save the organization
+                        year=year  # Save the year
                     )
                     payment.save()
-                    print(f"Saved payment: {payment}")
-
-                    # Update the fee totals for the student and receipt_type
-                    if student_admission_no not in fee_totals:
-                        fee_totals[student_admission_no] = {}
-
-                    if receipt_type not in fee_totals[student_admission_no]:
-                        fee_totals[student_admission_no][receipt_type] = 0
-
-                    fee_totals[student_admission_no][receipt_type] += amount
-
+                    print(f"Saved payment: {payment}")  # Print saved payment info
                 except ValidationError as e:
                     print(f"Validation error for row {index + 1}: {e}")
                 except Exception as e:
                     print(f"Error saving payment for row {index + 1}: {e}")
-
-            # Display or save the fee totals
-            for student_admission_no, receipt_totals in fee_totals.items():
-                print(f"Total fees for student {student_admission_no}:")
-                for receipt_type, total in receipt_totals.items():
-                    print(f"  {receipt_type}: {total}")
 
             return HttpResponse('Payments uploaded successfully')
         else:
@@ -509,6 +486,8 @@ def upload_payments(request):
         form = PaymentUploadForm()
 
     return render(request, 'upload_payments.html', {'form': form})
+
+
 
 
 
